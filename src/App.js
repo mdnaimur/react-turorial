@@ -1,36 +1,33 @@
-import React, { Component } from 'react';
-import './App.css';
-import Table from './Table';
-import Form from './Form';
+import React, { Component } from 'react'
 
 class App extends Component {
   state = {
-    characters: [],
+    data: [],
   }
 
-  removeCharacter = (index) => {
-    const { characters } = this.state
+  // Code is invoked after the component is mounted/inserted into the DOM tree.
+  componentDidMount() {
+    const url =
+      'https://en.wikipedia.org/w/api.php?action=opensearch&search=Seona+Dancing&format=json&origin=*'
 
-    this.setState({
-      characters: characters.filter((character, i) => {
-        return i !== index
-      }),
-    })
-  };
-  handleSubmit = (character) => {
-    this.setState({ characters: [...this.state.characters, character] })
+    fetch(url)
+      .then((result) => result.json())
+      .then((result) => {
+        this.setState({
+          data: result,
+        })
+      })
   }
+
   render() {
+    const { data } = this.state
 
-    const { characters } = this.state
-    return (
-      <div className="container">
+    const result = data.map((entry, index) => {
+      return <li key={index}>{entry}</li>
+    })
 
-        <Table characterData={characters} removeCharacter={this.removeCharacter} />
-        <Form handleSubmit={this.handleSubmit} />
-      </div>
-    );
+    return <ul>{result}</ul>
   }
 }
 
-export default App;
+export default App
